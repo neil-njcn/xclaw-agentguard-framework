@@ -31,10 +31,13 @@ Helper daemon (optional):
   xclaw-agentguard engine-stop
   xclaw-agentguard engine-status
 
+Dashboard (optional):
+  xclaw-agentguard dashboard            # Start web dashboard at http://127.0.0.1:20118
+
 Python Usage:
   # Framework mode (always works)
   from xclaw_agentguard import PromptInjectionDetector
-  
+
   # Engine mode (optional)
   from xclaw_agentguard.engine import start_engine_daemon
         """
@@ -53,6 +56,12 @@ Python Usage:
     
     subparsers.add_parser("engine-stop", help="Stop protection engine")
     subparsers.add_parser("engine-status", help="Show engine status")
+    
+    # Dashboard commands
+    dashboard_start = subparsers.add_parser("dashboard", help="Start web dashboard (optional)")
+    dashboard_start.add_argument("--host", default="127.0.0.1", help="Host to bind to (default: 127.0.0.1)")
+    dashboard_start.add_argument("--port", type=int, default=20118, help="Port to listen on (default: 20118)")
+    dashboard_start.add_argument("--debug", action="store_true", help="Enable debug mode")
     
     return parser
 
@@ -134,6 +143,20 @@ def cmd_engine_status(args) -> int:
     return 1
 
 
+def cmd_dashboard(args) -> int:
+    print("🚀 Starting dashboard...")
+    print("   (Requires: pip install xclaw-agentguard-framework[dashboard])")
+    
+    try:
+        from .dashboard import run_server
+        run_server(host=args.host, port=args.port, debug=args.debug)
+        return 0
+    except ImportError as e:
+        print(f"❌ Dashboard not available: {e}")
+        print("   Install with: pip install xclaw-agentguard-framework[dashboard]")
+        return 1
+
+
 def main(args: Optional[List[str]] = None) -> int:
     parser = create_parser()
     parsed = parser.parse_args(args)
@@ -149,6 +172,7 @@ def main(args: Optional[List[str]] = None) -> int:
         "engine-start": cmd_engine_start,
         "engine-stop": cmd_engine_stop,
         "engine-status": cmd_engine_status,
+        "dashboard": cmd_dashboard,
     }
     
     handler = commands.get(parsed.command)
