@@ -1,0 +1,440 @@
+{
+  "description": "Tool poisoning detection patterns for command injection attacks",
+  "version": "1.0.0",
+  "patterns": {
+    "shell_metacharacters": {
+      "description": "Shell metacharacters that can be used for command injection",
+      "severity": "critical",
+      "patterns": [
+        {
+          "name": "semicolon",
+          "pattern": ";",
+          "description": "Command separator - allows chaining commands"
+        },
+        {
+          "name": "ampersand",
+          "pattern": "&",
+          "description": "Background execution operator"
+        },
+        {
+          "name": "double_ampersand",
+          "pattern": "&&",
+          "description": "Logical AND - executes second command if first succeeds"
+        },
+        {
+          "name": "pipe",
+          "pattern": "|",
+          "description": "Pipe output of one command to another"
+        },
+        {
+          "name": "double_pipe",
+          "pattern": "||",
+          "description": "Logical OR - executes second command if first fails"
+        },
+        {
+          "name": "command_substitution_backtick",
+          "pattern": "`",
+          "description": "Backtick command substitution"
+        },
+        {
+          "name": "redirection_out",
+          "pattern": ">",
+          "description": "Output redirection - can overwrite files"
+        },
+        {
+          "name": "redirection_append",
+          "pattern": ">>",
+          "description": "Output append redirection"
+        },
+        {
+          "name": "redirection_in",
+          "pattern": "<",
+          "description": "Input redirection"
+        },
+        {
+          "name": "newline",
+          "pattern": "\\n",
+          "description": "Newline character - starts new command"
+        },
+        {
+          "name": "dollar_parenthesis",
+          "pattern": "$(",
+          "description": "Dollar-parenthesis command substitution start"
+        },
+        {
+          "name": "hash_comment",
+          "pattern": "#",
+          "description": "Comment character - rest of line is ignored"
+        },
+        {
+          "name": "brace_expansion",
+          "pattern": "{",
+          "description": "Brace expansion start"
+        },
+        {
+          "name": "tilde_expansion",
+          "pattern": "~/",
+          "description": "Tilde expansion for home directory"
+        },
+        {
+          "name": "glob_asterisk",
+          "pattern": "*",
+          "description": "Wildcard glob character"
+        },
+        {
+          "name": "glob_question",
+          "pattern": "?",
+          "description": "Single character wildcard"
+        },
+        {
+          "name": "glob_bracket",
+          "pattern": "[",
+          "description": "Character class glob start"
+        }
+      ]
+    },
+    "command_substitution": {
+      "description": "Patterns that allow command substitution execution",
+      "severity": "critical",
+      "patterns": [
+        {
+          "name": "backtick_command",
+          "pattern": "`[^`]+`",
+          "description": "Backtick command substitution: `command`"
+        },
+        {
+          "name": "dollar_paren_command",
+          "pattern": "\\$\\([^)]+\\)",
+          "description": "Dollar-parenthesis substitution: $(command)"
+        },
+        {
+          "name": "nested_substitution",
+          "pattern": "\\$\\(\\$\\(",
+          "description": "Nested command substitution"
+        },
+        {
+          "name": "env_substitution",
+          "pattern": "\\$\\{[^}]+\\}",
+          "description": "Parameter expansion: ${var}"
+        },
+        {
+          "name": "arithmetic_expansion",
+          "pattern": "\\$\\(\\([^)]+\\)\\)",
+          "description": "Arithmetic expansion: $((expression))"
+        },
+        {
+          "name": "process_substitution_input",
+          "pattern": "<\\(",
+          "description": "Process substitution input: <(command)"
+        },
+        {
+          "name": "process_substitution_output",
+          "pattern": ">\\(",
+          "description": "Process substitution output: >(command)"
+        },
+        {
+          "name": "eval_function",
+          "pattern": "\\beval\\b",
+          "description": "Eval builtin command",
+          "case_sensitive": false
+        }
+      ]
+    },
+    "dangerous_commands": {
+      "description": "Commands that can cause harm when injected",
+      "severity": "critical",
+      "patterns": [
+        {
+          "name": "rm_command",
+          "pattern": "\\brm\\b",
+          "description": "Remove files/directories",
+          "case_sensitive": false
+        },
+        {
+          "name": "rm_rf",
+          "pattern": "rm\\s+-[a-zA-Z]*r[a-zA-Z]*f",
+          "description": "Force recursive delete (rm -rf)"
+        },
+        {
+          "name": "chmod_command",
+          "pattern": "\\bchmod\\b",
+          "description": "Change file permissions",
+          "case_sensitive": false
+        },
+        {
+          "name": "chown_command",
+          "pattern": "\\bchown\\b",
+          "description": "Change file ownership",
+          "case_sensitive": false
+        },
+        {
+          "name": "mv_command",
+          "pattern": "\\bmv\\b",
+          "description": "Move/rename files",
+          "case_sensitive": false
+        },
+        {
+          "name": "dd_command",
+          "pattern": "\\bdd\\b",
+          "description": "Low-level disk copy (can overwrite disks)",
+          "case_sensitive": false
+        },
+        {
+          "name": "mkfs_command",
+          "pattern": "\\bmkfs\\b",
+          "description": "Make filesystem (formats drives)",
+          "case_sensitive": false
+        },
+        {
+          "name": "fdisk_command",
+          "pattern": "\\bfdisk\\b",
+          "description": "Partition table manipulator",
+          "case_sensitive": false
+        },
+        {
+          "name": "wget_command",
+          "pattern": "\\bwget\\b",
+          "description": "Download files from web",
+          "case_sensitive": false
+        },
+        {
+          "name": "curl_command",
+          "pattern": "\\bcurl\\b",
+          "description": "Transfer data from/to server",
+          "case_sensitive": false
+        },
+        {
+          "name": "nc_command",
+          "pattern": "\\bnc\\b|\\bnetcat\\b",
+          "description": "Netcat - networking utility",
+          "case_sensitive": false
+        },
+        {
+          "name": "bash_command",
+          "pattern": "\\bbash\\b|\\bsh\\b|\\bzsh\\b",
+          "description": "Shell execution",
+          "case_sensitive": false
+        },
+        {
+          "name": "python_command",
+          "pattern": "\\bpython[0-9]*\\b|\\bpy\\b",
+          "description": "Python interpreter execution",
+          "case_sensitive": false
+        },
+        {
+          "name": "perl_command",
+          "pattern": "\\bperl\\b",
+          "description": "Perl interpreter",
+          "case_sensitive": false
+        },
+        {
+          "name": "ruby_command",
+          "pattern": "\\bruby\\b",
+          "description": "Ruby interpreter",
+          "case_sensitive": false
+        },
+        {
+          "name": "node_command",
+          "pattern": "\\bnode\\b",
+          "description": "Node.js interpreter",
+          "case_sensitive": false
+        },
+        {
+          "name": "sudo_command",
+          "pattern": "\\bsudo\\b",
+          "description": "Execute as superuser",
+          "case_sensitive": false
+        },
+        {
+          "name": "su_command",
+          "pattern": "\\bsu\\b",
+          "description": "Switch user",
+          "case_sensitive": false
+        },
+        {
+          "name": "ssh_command",
+          "pattern": "\\bssh\\b",
+          "description": "SSH client",
+          "case_sensitive": false
+        },
+        {
+          "name": "scp_command",
+          "pattern": "\\bscp\\b",
+          "description": "Secure copy",
+          "case_sensitive": false
+        },
+        {
+          "name": "cat_command",
+          "pattern": "\\bcat\\b",
+          "description": "Concatenate files (can expose sensitive data)",
+          "case_sensitive": false
+        },
+        {
+          "name": "find_exec",
+          "pattern": "find\\s+.*-exec",
+          "description": "Find with exec"
+        },
+        {
+          "name": "find_ok",
+          "pattern": "find\\s+.*-ok",
+          "description": "Find with ok"
+        },
+        {
+          "name": "xargs_command",
+          "pattern": "\\bxargs\\b",
+          "description": "Build and execute commands from stdin",
+          "case_sensitive": false
+        },
+        {
+          "name": "awk_system",
+          "pattern": "awk\\s+.*system",
+          "description": "AWK with system call"
+        },
+        {
+          "name": "sed_exec",
+          "pattern": "sed\\s+.*e[^a-zA-Z]",
+          "description": "Sed with execute flag"
+        }
+      ]
+    },
+    "encoding_tricks": {
+      "description": "Encoding techniques used to bypass filters",
+      "severity": "high",
+      "patterns": [
+        {
+          "name": "url_encoding",
+          "pattern": "%[0-9a-fA-F]{2}",
+          "description": "URL percent encoding"
+        },
+        {
+          "name": "double_url_encoding",
+          "pattern": "%25[0-9a-fA-F]{2}",
+          "description": "Double URL encoding"
+        },
+        {
+          "name": "unicode_encoding",
+          "pattern": "\\u[0-9a-fA-F]{4}",
+          "description": "Unicode escape sequence"
+        },
+        {
+          "name": "hex_encoding",
+          "pattern": "\\x[0-9a-fA-F]{2}",
+          "description": "Hex escape sequence"
+        },
+        {
+          "name": "octal_encoding",
+          "pattern": "\\[0-7]{1,3}",
+          "description": "Octal escape sequence"
+        },
+        {
+          "name": "base64_pattern",
+          "pattern": "(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?",
+          "description": "Base64 encoded data pattern"
+        },
+        {
+          "name": "html_entity",
+          "pattern": "&#[0-9]+;|&#x[0-9a-fA-F]+;|&[a-zA-Z]+;",
+          "description": "HTML entity encoding"
+        },
+        {
+          "name": "zero_width_chars",
+          "pattern": "[\\u200B\\u200C\\u200D\\uFEFF]",
+          "description": "Zero-width characters (invisible)"
+        },
+        {
+          "name": "homoglyph_attack",
+          "pattern": "[а-яА-Я]",
+          "description": "Cyrillic characters used as ASCII homoglyphs"
+        },
+        {
+          "name": "mixed_encoding",
+          "pattern": "\\\\u00[0-9a-fA-F]{2}",
+          "description": "Mixed encoding with backslash-u"
+        },
+        {
+          "name": "newline_crlf",
+          "pattern": "\\r\\n",
+          "description": "CRLF line ending"
+        },
+        {
+          "name": "null_byte",
+          "pattern": "\\x00",
+          "description": "Null byte injection"
+        },
+        {
+          "name": "tab_character",
+          "pattern": "\\t",
+          "description": "Tab character"
+        },
+        {
+          "name": "form_feed",
+          "pattern": "\\f",
+          "description": "Form feed character"
+        },
+        {
+          "name": "vertical_tab",
+          "pattern": "\\v",
+          "description": "Vertical tab character"
+        }
+      ]
+    }
+  },
+  "detection_rules": {
+    "command_injection_basic": {
+      "description": "Basic command injection detection",
+      "severity": "critical",
+      "conditions": [
+        "shell_metacharacters.pattern_count > 0",
+        "dangerous_commands.pattern_count > 0"
+      ],
+      "score": 100
+    },
+    "command_substitution_risk": {
+      "description": "Command substitution detected",
+      "severity": "critical",
+      "conditions": [
+        "command_substitution.pattern_count > 0"
+      ],
+      "score": 95
+    },
+    "encoding_evasion": {
+      "description": "Possible encoding-based evasion",
+      "severity": "high",
+      "conditions": [
+        "encoding_tricks.pattern_count >= 3"
+      ],
+      "score": 75
+    },
+    "suspicious_combination": {
+      "description": "Suspicious pattern combination",
+      "severity": "medium",
+      "conditions": [
+        "shell_metacharacters.pattern_count >= 2",
+        "encoding_tricks.pattern_count >= 1"
+      ],
+      "score": 60
+    }
+  },
+  "severity_levels": {
+    "critical": {
+      "score_range": [90, 100],
+      "action": "block",
+      "alert": true
+    },
+    "high": {
+      "score_range": [70, 89],
+      "action": "block",
+      "alert": true
+    },
+    "medium": {
+      "score_range": [40, 69],
+      "action": "sanitize",
+      "alert": false
+    },
+    "low": {
+      "score_range": [0, 39],
+      "action": "allow",
+      "alert": false
+    }
+  }
+}

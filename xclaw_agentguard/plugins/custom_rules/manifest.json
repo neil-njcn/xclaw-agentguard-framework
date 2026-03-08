@@ -1,0 +1,16 @@
+{
+  "id": "custom_rules",
+  "name": "Custom Rules",
+  "version": "1.0.0",
+  "author": "AgentGuard Team",
+  "description": "Define custom detection rules via YAML configuration",
+  "requires_core": "^2.3.0",
+  "dependencies": {
+    "pyyaml": ">=6.0"
+  },
+  "entry_point": "plugin.py:CustomRulesPlugin",
+  "config": {
+    "rules_file": "custom_rules.yaml",
+    "auto_reload": false
+  }
+}

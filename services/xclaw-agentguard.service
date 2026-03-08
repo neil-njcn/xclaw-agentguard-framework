@@ -1,0 +1,11 @@
+[Unit]
+Description=XClaw AgentGuard Protection Engine
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=xclaw-agentguard engine-start --daemon
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

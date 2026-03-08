@@ -1,0 +1,15 @@
+{
+  "id": "notification",
+  "name": "Notification",
+  "version": "1.0.0",
+  "author": "AgentGuard Team",
+  "description": "Send real-time notifications when threats are detected",
+  "requires_core": "^2.3.0",
+  "dependencies": {},
+  "entry_point": "plugin.py:NotificationPlugin",
+  "config": {
+    "webhook_url": "",
+    "min_severity": "high",
+    "notifier_type": "console"
+  }
+}

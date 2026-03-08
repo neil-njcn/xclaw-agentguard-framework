@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="app.title">XClaw AgentGuard Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 data-i18n="app.name">XClaw AgentGuard</h1>
+            <div class="header-right">
+                <!-- Language Switcher -->
+                <div class="language-switcher" id="language-switcher">
+                    <button class="lang-toggle" aria-haspopup="true" aria-expanded="false">
+                        <span class="lang-icon">🌐</span>
+                        <span class="current-lang">English</span>
+                        <span class="lang-arrow">▼</span>
+                    </button>
+                    <div class="lang-dropdown">
+                        <a href="#" class="lang-option" data-lang="en" data-i18n="nav.english">English</a>
+                        <a href="#" class="lang-option" data-lang="cn" data-i18n="nav.chinese">简体中文</a>
+                    </div>
+                </div>
+                <span class="version" id="version" data-i18n="app.version">v2.3.0</span>
+            </div>
+        </header>
+
+        <!-- Alerts -->
+        <div id="alert-container"></div>
+
+        <!-- Status Overview -->
+        <div class="card">
+            <h2 data-i18n="status.title">📊 System Status</h2>
+            <div class="refresh-indicator" style="float: right; margin-top: -2.5rem;">
+                <span class="spinner" id="status-spinner"></span>
+                <span id="last-updated" data-i18n="status.updating">Updating...</span>
+            </div>
+            <div class="status-grid" id="status-grid">
+                <div class="status-item">
+                    <div class="label" data-i18n="status.systemStatus">System Status</div>
+                    <div class="value info" id="system-status" data-i18n="status.checking">Checking...</div>
+                </div>
+                <div class="status-item">
+                    <div class="label" data-i18n="status.uptime">Uptime</div>
+                    <div class="value" id="uptime">--</div>
+                </div>
+                <div class="status-item">
+                    <div class="label" data-i18n="status.activeDetectors">Active Detectors</div>
+                    <div class="value success" id="active-detectors">--</div>
+                </div>
+                <div class="status-item">
+                    <div class="label" data-i18n="status.activePlugins">Active Plugins</div>
+                    <div class="value success" id="active-plugins">--</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Two Column Layout -->
+        <div class="two-column">
+            <!-- Detectors -->
+            <div class="card">
+                <h2 data-i18n="detectors.title">🔍 Detectors</h2>
+                <div class="toggle-list" id="detector-list">
+                    <div class="toggle-item">
+                        <span data-i18n="detectors.loading">Loading...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Plugins -->
+            <div class="card">
+                <h2 data-i18n="plugins.title">🔌 Plugins</h2>
+                <div class="toggle-list" id="plugin-list">
+                    <div class="toggle-item">
+                        <span data-i18n="plugins.loading">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="card">
+            <h2 data-i18n="statistics.title">📈 Detection Statistics (24h)</h2>
+            <div class="chart-container" id="detection-chart"></div>
+        </div>
+
+        <!-- Configuration -->
+        <div class="card">
+            <h2 data-i18n="configuration.title">⚙️ Configuration</h2>
+            <div class="config-editor">
+                <textarea id="config-textarea" spellcheck="false"></textarea>
+                <div class="config-actions">
+                    <button class="btn btn-primary" id="save-config" data-i18n="configuration.save">💾 Save & Reload</button>
+                    <button class="btn btn-secondary" id="reset-config" data-i18n="configuration.reset">↩️ Reset</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logs -->
+        <div class="card">
+            <h2 data-i18n="logs.title">📝 Detection Logs</h2>
+            <div class="log-viewer">
+                <div class="log-toolbar">
+                    <div class="log-filters">
+                        <button class="log-filter active" data-level="all" data-i18n="logs.all">All</button>
+                        <button class="log-filter" data-level="info" data-i18n="logs.info">Info</button>
+                        <button class="log-filter" data-level="warning" data-i18n="logs.warning">Warning</button>
+                        <button class="log-filter" data-level="error" data-i18n="logs.error">Error</button>
+                    </div>
+                    <span id="log-count" data-i18n-entries="0 entries">0 entries</span>
+                </div>
+                <div class="log-list" id="log-list">
+                    <!-- Logs will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/i18n.js"></script>
+    <script>
+        // Dashboard JavaScript
+        const API_BASE = '/api';
+        const REFRESH_INTERVAL = 5000; // 5 seconds
+        
+        let currentConfig = {};
+        let logFilter = 'all';
+
+        // Initialize i18n
+        document.addEventListener('DOMContentLoaded', async () => {
+            await i18n.init();
+            init();
+        });
+
+        // Utility functions
+        function formatDuration(seconds) {
+            return i18n.formatDuration(seconds);
+        }
+
+        function formatTime(timestamp) {
+            return i18n.formatTime(timestamp);
+        }
+
+        function showAlert(message, type = 'info') {
+            const container = document.getElementById('alert-container');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.innerHTML = `
+                <span>${message}</span>
+                <button onclick="this.parentElement.remove()" style="margin-left: auto; background: none; border: none; color: inherit; cursor: pointer;" data-i18n-aria-label="logs.close">✕</button>
+            `;
+            container.appendChild(alert);
+            setTimeout(() => alert.remove(), 5000);
+        }
+
+        // API calls
+        async function fetchStatus() {
+            try {
+                const response = await fetch(`${API_BASE}/status`);
+                return await response.json();
+            } catch (error) {
+                console.error('Failed to fetch status:', error);
+                return null;
+            }
+        }
+
+        async function fetchDetectors() {
+            try {
+                const response = await fetch(`${API_BASE}/detectors`);
+                return await response.json();
+            } catch (error) {
+                console.error('Failed to fetch detectors:', error);
+                return null;
+            }
+        }
+
+        async function fetchPlugins() {
+            try {
+                const response = await fetch(`${API_BASE}/plugins`);
+                return await response.json();
+            } catch (error) {
+                console.error('Failed to fetch plugins:', error);
+                return null;
+            }
+        }
+
+        async function fetchStats() {
+            try {
+                const response = await fetch(`${API_BASE}/stats`);
+                return await response.json();
+            } catch (error) {
+                console.error('Failed to fetch stats:', error);
+                return null;
+            }
+        }
+
+        async function fetchConfig() {
+            try {
+                const response = await fetch(`${API_BASE}/config`);
+                return await response.json();
+            } catch (error) {
+                console.error('Failed to fetch config:', error);
+                return null;
+            }
+        }
+
+        async function fetchLogs() {
+            try {
+                const response = await fetch(`${API_BASE}/logs?limit=100`);
+                return await response.json();
+            } catch (error) {
+                console.error('Failed to fetch logs:', error);
+                return null;
+            }
+        }
+
+        async function toggleComponent(type, name, enabled) {
+            try {
+                const response = await fetch(`${API_BASE}/toggle`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type, name, enabled })
+                });
+                return await response.json();
+            } catch (error) {
+                console.error('Failed to toggle component:', error);
+                return null;
+            }
+        }
+
+        async function updateConfig(config) {
+            try {
+                const response = await fetch(`${API_BASE}/config`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(config)
+                });
+                return await response.json();
+            } catch (error) {
+                console.error('Failed to update config:', error);
+                return null;
+            }
+        }
+
+        // UI update functions
+        function updateStatus(data) {
+            if (!data) return;
+            
+            const statusEl = document.getElementById('system-status');
+            const statusKey = data.status === 'healthy' ? 'status.healthy' : 'status.degraded';
+            statusEl.textContent = i18n.t(statusKey);
+            statusEl.className = `value ${data.status === 'healthy' ? 'success' : 'warning'}`;
+            
+            document.getElementById('uptime').textContent = formatDuration(data.uptime_seconds);
+            document.getElementById('active-detectors').textContent = `${data.detectors.active}/${data.detectors.total}`;
+            document.getElementById('active-plugins').textContent = `${data.plugins.active}/${data.plugins.total}`;
+            
+            document.getElementById('last-updated').textContent = new Date().toLocaleTimeString(
+                i18n.getCurrentLanguage() === 'cn' ? 'zh-CN' : 'en-US'
+            );
+        }
+
+        function updateDetectors(data) {
+            if (!data || !data.detectors) return;
+            
+            const list = document.getElementById('detector-list');
+            list.innerHTML = data.detectors.map(detector => {
+                const name = detector.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                return `
+                    <div class="toggle-item">
+                        <div class="info">
+                            <span class="name">${name}</span>
+                            <span class="meta">
+                                <span class="indicator ${detector.status === 'active' ? 'online' : 'offline'}"></span>
+                                ${detector.detections} ${i18n.t('detectors.detections')} • ${detector.errors} ${i18n.t('detectors.errors')}
+                            </span>
+                        </div>
+                        <button class="toggle-switch ${detector.enabled ? 'active' : ''}" 
+                                data-type="detector" 
+                                data-name="${detector.name}"
+                                ${detector.status === 'error' ? 'disabled' : ''}>
+                        </button>
+                    </div>
+                `;
+            }).join('');
+            
+            // Add click handlers
+            list.querySelectorAll('.toggle-switch').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const type = e.target.dataset.type;
+                    const name = e.target.dataset.name;
+                    const enabled = !e.target.classList.contains('active');
+                    
+                    e.target.disabled = true;
+                    const result = await toggleComponent(type, name, enabled);
+                    
+                    if (result && result.success) {
+                        e.target.classList.toggle('active');
+                        const statusKey = enabled ? 'detectors.enabled' : 'detectors.disabled';
+                        showAlert(`${name} ${i18n.t(statusKey)}`, 'success');
+                        refreshData();
+                    } else {
+                        showAlert(`${i18n.t('detectors.toggleFailed')} ${name}`, 'danger');
+                    }
+                    e.target.disabled = false;
+                });
+            });
+        }
+
+        function updatePlugins(data) {
+            if (!data || !data.plugins) return;
+            
+            const list = document.getElementById('plugin-list');
+            list.innerHTML = data.plugins.map(plugin => {
+                const name = plugin.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                return `
+                    <div class="toggle-item">
+                        <div class="info">
+                            <span class="name">${name}</span>
+                            <span class="meta">
+                                <span class="indicator ${plugin.status === 'active' ? 'online' : 'offline'}"></span>
+                                ${i18n.t('plugins.version')} ${plugin.version}
+                            </span>
+                        </div>
+                        <button class="toggle-switch ${plugin.enabled ? 'active' : ''}" 
+                                data-type="plugin" 
+                                data-name="${plugin.name}">
+                        </button>
+                    </div>
+                `;
+            }).join('');
+            
+            // Add click handlers
+            list.querySelectorAll('.toggle-switch').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const type = e.target.dataset.type;
+                    const name = e.target.dataset.name;
+                    const enabled = !e.target.classList.contains('active');
+                    
+                    e.target.disabled = true;
+                    const result = await toggleComponent(type, name, enabled);
+                    
+                    if (result && result.success) {
+                        e.target.classList.toggle('active');
+                        const statusKey = enabled ? 'plugins.enabled' : 'plugins.disabled';
+                        showAlert(`${name} ${i18n.t(statusKey)}`, 'success');
+                        refreshData();
+                    } else {
+                        showAlert(`${i18n.t('plugins.toggleFailed')} ${name}`, 'danger');
+                    }
+                    e.target.disabled = false;
+                });
+            });
+        }
+
+        function updateStats(data) {
+            if (!data || !data.hourly_detections) return;
+            
+            const chart = document.getElementById('detection-chart');
+            const maxValue = Math.max(...data.hourly_detections.map(d => d.count), 1);
+            
+            chart.innerHTML = data.hourly_detections.map(d => {
+                const height = (d.count / maxValue) * 100;
+                return `<div class="chart-bar" style="height: ${height}%" data-value="${d.count}" title="${d.hour}: ${d.count} ${i18n.t('statistics.detections')}"></div>`;
+            }).join('');
+        }
+
+        function updateConfigEditor(data) {
+            if (!data) return;
+            currentConfig = data;
+            document.getElementById('config-textarea').value = JSON.stringify(data, null, 2);
+        }
+
+        function updateLogs(data) {
+            if (!data || !data.logs) return;
+            
+            const list = document.getElementById('log-list');
+            const filtered = logFilter === 'all' 
+                ? data.logs 
+                : data.logs.filter(log => log.level.toLowerCase() === logFilter);
+            
+            document.getElementById('log-count').textContent = `${filtered.length} ${i18n.t('logs.entries')}`;
+            
+            if (filtered.length === 0) {
+                list.innerHTML = `<div class="log-entry"><span class="log-message" data-i18n="logs.noLogs">${i18n.t('logs.noLogs')}</span></div>`;
+                return;
+            }
+            
+            list.innerHTML = filtered.map(log => `
+                <div class="log-entry">
+                    <span class="log-time">${formatTime(log.timestamp)}</span>
+                    <span class="log-level ${log.level.toLowerCase()}">${log.level}</span>
+                    <span class="log-detector">${log.detector}</span>
+                    <span class="log-message">${log.message}</span>
+                    ${log.blocked ? `<span class="log-blocked">${i18n.t('logs.blocked')}</span>` : ''}
+                </div>
+            `).join('');
+        }
+
+        // Main refresh function
+        async function refreshData() {
+            const status = await fetchStatus();
+            updateStatus(status);
+            
+            const detectors = await fetchDetectors();
+            updateDetectors(detectors);
+            
+            const plugins = await fetchPlugins();
+            updatePlugins(plugins);
+            
+            const stats = await fetchStats();
+            updateStats(stats);
+        }
+
+        async function init() {
+            // Initial load
+            await refreshData();
+            
+            const config = await fetchConfig();
+            updateConfigEditor(config);
+            
+            const logs = await fetchLogs();
+            updateLogs(logs);
+            
+            // Hide spinner
+            document.getElementById('status-spinner').style.display = 'none';
+            
+            // Setup auto-refresh
+            setInterval(refreshData, REFRESH_INTERVAL);
+            setInterval(async () => {
+                const logs = await fetchLogs();
+                updateLogs(logs);
+            }, REFRESH_INTERVAL);
+        }
+
+        // Event handlers
+        document.getElementById('save-config').addEventListener('click', async () => {
+            try {
+                const textarea = document.getElementById('config-textarea');
+                const config = JSON.parse(textarea.value);
+                const result = await updateConfig(config);
+                
+                if (result && result.success) {
+                    showAlert(i18n.t('configuration.saveSuccess'), 'success');
+                    currentConfig = config;
+                } else {
+                    showAlert(i18n.t('configuration.saveFailed'), 'danger');
+                }
+            } catch (error) {
+                showAlert(`${i18n.t('configuration.invalidJson')}: ${error.message}`, 'danger');
+            }
+        });
+
+        document.getElementById('reset-config').addEventListener('click', () => {
+            document.getElementById('config-textarea').value = JSON.stringify(currentConfig, null, 2);
+            showAlert(i18n.t('configuration.resetSuccess'), 'info');
+        });
+
+        document.querySelectorAll('.log-filter').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.log-filter').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                logFilter = e.target.dataset.level;
+                fetchLogs().then(updateLogs);
+            });
+        });
+
+        // Language toggle dropdown
+        document.querySelector('.lang-toggle').addEventListener('click', (e) => {
+            e.stopPropagation();
+            const switcher = document.getElementById('language-switcher');
+            const isExpanded = switcher.classList.toggle('open');
+            document.querySelector('.lang-toggle').setAttribute('aria-expanded', isExpanded);
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', () => {
+            const switcher = document.getElementById('language-switcher');
+            if (switcher.classList.contains('open')) {
+                switcher.classList.remove('open');
+                document.querySelector('.lang-toggle').setAttribute('aria-expanded', 'false');
+            }
+        });
+    </script>
+</body>
+</html>

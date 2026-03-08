@@ -1,0 +1,16 @@
+{
+  "id": "versioned_example",
+  "name": "Versioned Example Plugin",
+  "version": "1.2.0",
+  "author": "Neil",
+  "description": "An example plugin with version management",
+  "requires_core": "^2.3.0",
+  "dependencies": {},
+  "optional_dependencies": {},
+  "conflicts": [],
+  "entry_point": "plugin.py:VersionedExamplePlugin",
+  "config": {
+    "enabled": true,
+    "severity_threshold": "medium"
+  }
+}

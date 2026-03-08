@@ -1,0 +1,18 @@
+rules:
+  - name: "Example Pattern"
+    pattern: "EXAMPLE_VIOLATION"
+    severity: "low"
+    description: "Example rule for testing"
+    enabled: true
+
+  - name: "Sensitive Keyword"
+    pattern: "(?i)(password|secret|token|key)\\s*[=:]"
+    severity: "high"
+    description: "Potential credential exposure"
+    enabled: true
+
+  - name: "Email Pattern"
+    pattern: "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b"
+    severity: "medium"
+    description: "Email address detected"
+    enabled: false

@@ -1,0 +1,15 @@
+{
+  "id": "example_plugin",
+  "name": "Example Plugin",
+  "version": "1.0.0",
+  "author": "AgentGuard Team",
+  "description": "An example plugin demonstrating the AgentGuard plugin API",
+  "requires_core": "^2.3.0",
+  "dependencies": {},
+  "optional_dependencies": {},
+  "conflicts": [],
+  "entry_point": "plugin.py:ExamplePlugin",
+  "config": {
+    "enabled": true
+  }
+}

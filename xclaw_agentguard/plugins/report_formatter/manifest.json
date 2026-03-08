@@ -1,0 +1,15 @@
+{
+  "id": "report_formatter",
+  "name": "Report Formatter",
+  "version": "1.0.0",
+  "author": "AgentGuard Team",
+  "description": "Format detection results to JSON, Markdown, and CSV",
+  "requires_core": "^2.3.0",
+  "dependencies": {},
+  "entry_point": "plugin.py:ReportFormatterPlugin",
+  "config": {
+    "default_format": "json",
+    "json_indent": 2,
+    "csv_delimiter": ","
+  }
+}

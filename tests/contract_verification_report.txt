@@ -1,0 +1,297 @@
+
+[1/4] 验证 DetectionResult 契约...
+
+[2/4] 验证配置契约...
+
+[3/4] 验证检测器接口契约...
+
+[4/4] 验证继承契约...
+================================================================================
+AG-V2 契约验证报告
+================================================================================
+生成时间: 2026-03-06T20:07:39.837168
+总计测试: 137
+通过: 137 | 失败: 0 | 警告: 0
+--------------------------------------------------------------------------------
+
+✅ 通过项:
+  ✓ ThreatLevel枚举定义
+    └─ 5个威胁等级 + 比较方法
+  ✓ AttackType枚举定义
+    └─ 11个攻击类型 + display_name + severity
+  ✓ DetectionEvidence不可变性
+    └─ tuple转换 + 序列化
+  ✓ ResultMetadata序列化
+    └─ to_dict/from_dict 工作正常
+  ✓ DetectionResult完整构建
+    └─ 验证逻辑 + 序列化 + 便捷方法
+  ✓ DetectionResultBuilder模式
+    └─ 链式调用 + 便捷工厂方法
+  ✓ DetectionResult验证约束
+    └─ 正确拒绝无效置信度
+  ✓ ConfigSchema定义
+    └─ 基础属性 + to_dict
+  ✓ DetectorConfig定义
+    └─ schema管理 + 查询方法
+  ✓ ConfigValidator验证
+    └─ 类型检查 + 范围检查 + 默认值
+  ✓ CommonConfigs预设
+    └─ threshold + enabled + log_level + max_length + timeout
+  ✓ 便捷函数
+    └─ create_config + create_detector_config
+  ✓ 检测器[jailbreak]继承关系
+    └─ 继承自 BaseDetector
+  ✓ 检测器[jailbreak]类属性
+    └─ DETECTOR_ID=jailbreak, VERSION=2.0.0
+  ✓ 检测器[jailbreak]必需方法
+    └─ detect + get_detector_id + get_supported_attack_types
+  ✓ 检测器[jailbreak]可选方法
+    └─ get_metadata, get_config_schema, configure
+  ✓ 检测器[jailbreak]实例化
+    └─ 无参数实例化成功
+  ✓ 检测器[jailbreak]get_detector_id
+    └─ 返回: 'jailbreak'
+  ✓ 检测器[jailbreak]攻击类型
+    └─ 支持: JAILBREAK
+  ✓ 检测器[jailbreak]detect返回值
+    └─ 返回有效 DetectionResult
+  ✓ 检测器[jailbreak]上下文检测
+    └─ 支持 context 参数
+  ✓ 检测器[jailbreak]配置模式
+    └─ 2 个配置项
+  ✓ 检测器[prompt_injection]继承关系
+    └─ 继承自 BaseDetector
+  ✓ 检测器[prompt_injection]类属性
+    └─ DETECTOR_ID=prompt_injection, VERSION=2.0.0
+  ✓ 检测器[prompt_injection]必需方法
+    └─ detect + get_detector_id + get_supported_attack_types
+  ✓ 检测器[prompt_injection]可选方法
+    └─ get_metadata, get_config_schema, configure
+  ✓ 检测器[prompt_injection]实例化
+    └─ 无参数实例化成功
+  ✓ 检测器[prompt_injection]get_detector_id
+    └─ 返回: 'prompt_injection'
+  ✓ 检测器[prompt_injection]攻击类型
+    └─ 支持: PROMPT_INJECTION
+  ✓ 检测器[prompt_injection]detect返回值
+    └─ 返回有效 DetectionResult
+  ✓ 检测器[prompt_injection]上下文检测
+    └─ 支持 context 参数
+  ✓ 检测器[prompt_injection]配置模式
+    └─ 2 个配置项
+  ✓ 检测器[output_injection]继承关系
+    └─ 继承自 BaseDetector
+  ✓ 检测器[output_injection]类属性
+    └─ DETECTOR_ID=output_injection, VERSION=2.0.0
+  ✓ 检测器[output_injection]必需方法
+    └─ detect + get_detector_id + get_supported_attack_types
+  ✓ 检测器[output_injection]可选方法
+    └─ get_metadata, get_config_schema, configure
+  ✓ 检测器[output_injection]实例化
+    └─ 无参数实例化成功
+  ✓ 检测器[output_injection]get_detector_id
+    └─ 返回: 'output_injection'
+  ✓ 检测器[output_injection]攻击类型
+    └─ 支持: OUTPUT_INJECTION
+  ✓ 检测器[output_injection]detect返回值
+    └─ 返回有效 DetectionResult
+  ✓ 检测器[output_injection]上下文检测
+    └─ 支持 context 参数
+  ✓ 检测器[output_injection]配置模式
+    └─ 2 个配置项
+  ✓ 检测器[agent_hijacking]继承关系
+    └─ 继承自 BaseDetector
+  ✓ 检测器[agent_hijacking]类属性
+    └─ DETECTOR_ID=agent_hijacking, VERSION=2.0.0
+  ✓ 检测器[agent_hijacking]必需方法
+    └─ detect + get_detector_id + get_supported_attack_types
+  ✓ 检测器[agent_hijacking]可选方法
+    └─ get_metadata, get_config_schema, configure
+  ✓ 检测器[agent_hijacking]实例化
+    └─ 无参数实例化成功
+  ✓ 检测器[agent_hijacking]get_detector_id
+    └─ 返回: 'agent_hijacking'
+  ✓ 检测器[agent_hijacking]攻击类型
+    └─ 支持: AGENT_HIJACKING
+  ✓ 检测器[agent_hijacking]detect返回值
+    └─ 返回有效 DetectionResult
+  ✓ 检测器[agent_hijacking]上下文检测
+    └─ 支持 context 参数
+  ✓ 检测器[agent_hijacking]配置模式
+    └─ 3 个配置项
+  ✓ 检测器[command_injection]继承关系
+    └─ 继承自 BaseDetector
+  ✓ 检测器[command_injection]类属性
+    └─ DETECTOR_ID=command_injection, VERSION=2.0.0
+  ✓ 检测器[command_injection]必需方法
+    └─ detect + get_detector_id + get_supported_attack_types
+  ✓ 检测器[command_injection]可选方法
+    └─ get_metadata, get_config_schema, configure
+  ✓ 检测器[command_injection]实例化
+    └─ 无参数实例化成功
+  ✓ 检测器[command_injection]get_detector_id
+    └─ 返回: 'command_injection'
+  ✓ 检测器[command_injection]攻击类型
+    └─ 支持: TOOL_ABUSE
+  ✓ 检测器[command_injection]detect返回值
+    └─ 返回有效 DetectionResult
+  ✓ 检测器[command_injection]上下文检测
+    └─ 支持 context 参数
+  ✓ 检测器[command_injection]配置模式
+    └─ 4 个配置项
+  ✓ 检测器[path_traversal]继承关系
+    └─ 继承自 BaseDetector
+  ✓ 检测器[path_traversal]类属性
+    └─ DETECTOR_ID=path_traversal, VERSION=2.0.0
+  ✓ 检测器[path_traversal]必需方法
+    └─ detect + get_detector_id + get_supported_attack_types
+  ✓ 检测器[path_traversal]可选方法
+    └─ get_metadata, get_config_schema, configure
+  ✓ 检测器[path_traversal]实例化
+    └─ 无参数实例化成功
+  ✓ 检测器[path_traversal]get_detector_id
+    └─ 返回: 'path_traversal'
+  ✓ 检测器[path_traversal]攻击类型
+    └─ 支持: TOOL_ABUSE
+  ✓ 检测器[path_traversal]detect返回值
+    └─ 返回有效 DetectionResult
+  ✓ 检测器[path_traversal]上下文检测
+    └─ 支持 context 参数
+  ✓ 检测器[path_traversal]配置模式
+    └─ 5 个配置项
+  ✓ 检测器[sql_injection]继承关系
+    └─ 继承自 BaseDetector
+  ✓ 检测器[sql_injection]类属性
+    └─ DETECTOR_ID=sql_injection, VERSION=2.0.0
+  ✓ 检测器[sql_injection]必需方法
+    └─ detect + get_detector_id + get_supported_attack_types
+  ✓ 检测器[sql_injection]可选方法
+    └─ get_metadata, get_config_schema, configure
+  ✓ 检测器[sql_injection]实例化
+    └─ 无参数实例化成功
+  ✓ 检测器[sql_injection]get_detector_id
+    └─ 返回: 'sql_injection'
+  ✓ 检测器[sql_injection]攻击类型
+    └─ 支持: TOOL_ABUSE
+  ✓ 检测器[sql_injection]detect返回值
+    └─ 返回有效 DetectionResult
+  ✓ 检测器[sql_injection]上下文检测
+    └─ 支持 context 参数
+  ✓ 检测器[sql_injection]配置模式
+    └─ 5 个配置项
+  ✓ 检测器[backdoor_code]继承关系
+    └─ 继承自 BaseDetector
+  ✓ 检测器[backdoor_code]类属性
+    └─ DETECTOR_ID=backdoor_code, VERSION=2.0.0
+  ✓ 检测器[backdoor_code]必需方法
+    └─ detect + get_detector_id + get_supported_attack_types
+  ✓ 检测器[backdoor_code]可选方法
+    └─ get_metadata, get_config_schema, configure
+  ✓ 检测器[backdoor_code]实例化
+    └─ 无参数实例化成功
+  ✓ 检测器[backdoor_code]get_detector_id
+    └─ 返回: 'backdoor_code'
+  ✓ 检测器[backdoor_code]攻击类型
+    └─ 支持: TOOL_ABUSE
+  ✓ 检测器[backdoor_code]detect返回值
+    └─ 返回有效 DetectionResult
+  ✓ 检测器[backdoor_code]上下文检测
+    └─ 支持 context 参数
+  ✓ 检测器[backdoor_code]配置模式
+    └─ 2 个配置项
+  ✓ 检测器[exfiltration_guard]继承关系
+    └─ 继承自 BaseDetector
+  ✓ 检测器[exfiltration_guard]类属性
+    └─ DETECTOR_ID=exfiltration_guard, VERSION=2.0.0
+  ✓ 检测器[exfiltration_guard]必需方法
+    └─ detect + get_detector_id + get_supported_attack_types
+  ✓ 检测器[exfiltration_guard]可选方法
+    └─ get_metadata, get_config_schema, configure
+  ✓ 检测器[exfiltration_guard]实例化
+    └─ 无参数实例化成功
+  ✓ 检测器[exfiltration_guard]get_detector_id
+    └─ 返回: 'exfiltration_guard'
+  ✓ 检测器[exfiltration_guard]攻击类型
+    └─ 支持: DATA_EXTRACTION
+  ✓ 检测器[exfiltration_guard]detect返回值
+    └─ 返回有效 DetectionResult
+  ✓ 检测器[exfiltration_guard]上下文检测
+    └─ 支持 context 参数
+  ✓ 检测器[exfiltration_guard]配置模式
+    └─ 4 个配置项
+  ✓ 检测器[system_prompt_leak]继承关系
+    └─ 继承自 BaseDetector
+  ✓ 检测器[system_prompt_leak]类属性
+    └─ DETECTOR_ID=system_prompt_leak, VERSION=2.0.0
+  ✓ 检测器[system_prompt_leak]必需方法
+    └─ detect + get_detector_id + get_supported_attack_types
+  ✓ 检测器[system_prompt_leak]可选方法
+    └─ get_metadata, get_config_schema, configure
+  ✓ 检测器[system_prompt_leak]实例化
+    └─ 无参数实例化成功
+  ✓ 检测器[system_prompt_leak]get_detector_id
+    └─ 返回: 'system_prompt_leak'
+  ✓ 检测器[system_prompt_leak]攻击类型
+    └─ 支持: SYSTEM_PROMPT_LEAK
+  ✓ 检测器[system_prompt_leak]detect返回值
+    └─ 返回有效 DetectionResult
+  ✓ 检测器[system_prompt_leak]上下文检测
+    └─ 支持 context 参数
+  ✓ 检测器[system_prompt_leak]配置模式
+    └─ 3 个配置项
+  ✓ 检测器[context_manipulation]继承关系
+    └─ 继承自 BaseDetector
+  ✓ 检测器[context_manipulation]类属性
+    └─ DETECTOR_ID=context_manipulation, VERSION=2.0.0
+  ✓ 检测器[context_manipulation]必需方法
+    └─ detect + get_detector_id + get_supported_attack_types
+  ✓ 检测器[context_manipulation]可选方法
+    └─ get_metadata, get_config_schema, configure
+  ✓ 检测器[context_manipulation]实例化
+    └─ 无参数实例化成功
+  ✓ 检测器[context_manipulation]get_detector_id
+    └─ 返回: 'context_manipulation'
+  ✓ 检测器[context_manipulation]攻击类型
+    └─ 支持: CONTEXT_MANIPULATION
+  ✓ 检测器[context_manipulation]detect返回值
+    └─ 返回有效 DetectionResult
+  ✓ 检测器[context_manipulation]上下文检测
+    └─ 支持 context 参数
+  ✓ 检测器[context_manipulation]配置模式
+    └─ 6 个配置项
+  ✓ 检测器[knowledge_poisoning]继承关系
+    └─ 继承自 BaseDetector
+  ✓ 检测器[knowledge_poisoning]类属性
+    └─ DETECTOR_ID=knowledge_poisoning, VERSION=2.0.0
+  ✓ 检测器[knowledge_poisoning]必需方法
+    └─ detect + get_detector_id + get_supported_attack_types
+  ✓ 检测器[knowledge_poisoning]可选方法
+    └─ get_metadata, get_config_schema, configure
+  ✓ 检测器[knowledge_poisoning]实例化
+    └─ 无参数实例化成功
+  ✓ 检测器[knowledge_poisoning]get_detector_id
+    └─ 返回: 'knowledge_poisoning'
+  ✓ 检测器[knowledge_poisoning]攻击类型
+    └─ 支持: MEMORY_POISONING
+  ✓ 检测器[knowledge_poisoning]detect返回值
+    └─ 返回有效 DetectionResult
+  ✓ 检测器[knowledge_poisoning]上下文检测
+    └─ 支持 context 参数
+  ✓ 检测器[knowledge_poisoning]配置模式
+    └─ 4 个配置项
+  ✓ BaseDetector抽象方法
+    └─ 3 个抽象方法
+  ✓ BaseDetector基础方法
+    └─ 10 个方法
+  ✓ BaseDetector功能测试
+    └─ 初始化 + 配置 + 检测流程
+  ✓ 继承链检查
+    └─ 12个检测器均继承自 BaseDetector
+  ✓ 注册表契约
+    └─ 12个检测器 + 别名支持 + 工厂方法
+
+📋 详细信息:
+  • 待验证检测器数量: 12
+--------------------------------------------------------------------------------
+验证结果: ✅ 全部通过
+================================================================================

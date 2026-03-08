@@ -1,0 +1,24 @@
+{
+  "id": "my_custom_plugin",
+  "name": "My Custom Plugin",
+  "version": "1.0.0",
+  "author": "Neil",
+  "description": "A custom security plugin for AgentGuard",
+  "requires_core": "^2.3.0",
+  "dependencies": {
+    "required_plugin": ">=1.0.0",
+    "another_plugin": "^2.0.0"
+  },
+  "optional_dependencies": {
+    "optional_feature": ">=0.5.0"
+  },
+  "conflicts": [
+    "incompatible_plugin"
+  ],
+  "entry_point": "my_plugin.py:MyPluginClass",
+  "config": {
+    "enabled": true,
+    "severity_threshold": "medium",
+    "custom_patterns": []
+  }
+}

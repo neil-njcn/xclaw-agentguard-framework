@@ -1,0 +1,14 @@
+{
+  "id": "example_webhook_notifier",
+  "name": "Example Webhook Notifier",
+  "version": "1.0.0",
+  "author": "XClaw AgentGuard Team",
+  "description": "Example plugin that sends critical threat alerts to a webhook endpoint",
+  "requires_core": "^2.3.0",
+  "entry_point": "plugin.py:WebhookNotifierPlugin",
+  "config": {
+    "webhook_url": "https://hooks.example.com/security-alerts",
+    "min_severity": "high",
+    "include_evidence": false
+  }
+}

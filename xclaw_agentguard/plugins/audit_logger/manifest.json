@@ -1,0 +1,15 @@
+{
+  "id": "audit_logger",
+  "name": "Audit Logger",
+  "version": "1.0.0",
+  "author": "AgentGuard Team",
+  "description": "Persistent audit logging for all detection results",
+  "requires_core": "^2.3.0",
+  "dependencies": {},
+  "entry_point": "plugin.py:AuditLoggerPlugin",
+  "config": {
+    "backend": "sqlite",
+    "db_path": "audit.db",
+    "log_file": "audit.log"
+  }
+}
