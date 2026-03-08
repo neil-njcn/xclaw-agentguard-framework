@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 packages = ["xclaw_agentguard", "xclaw_agentguard.core", "xclaw_agentguard.sandbox", "xclaw_agentguard.detectors", "xclaw_agentguard.detectors.agent_hijacking", "xclaw_agentguard.detectors.backdoor_code", "xclaw_agentguard.detectors.exfiltration_guard", "xclaw_agentguard.detectors.jailbreak", "xclaw_agentguard.detectors.memory_poisoning", "xclaw_agentguard.detectors.output_injection", "xclaw_agentguard.detectors.prompt_injection", "xclaw_agentguard.detectors.system_prompt_leak", "xclaw_agentguard.detectors.tool_poisoning", "xclaw_agentguard.anti_jacked", "xclaw_agentguard.config_watcher", "xclaw_agentguard.dashboard"]
 
 [tool.setuptools.package-data]
-xclaw_agentguard.dashboard = ["static/*", "static/**/*"]
+"xclaw_agentguard.dashboard" = ["static/*", "static/**/*"]
 
 [project]
 name = "xclaw-agentguard-framework"
