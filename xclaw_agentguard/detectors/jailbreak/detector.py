@@ -16,7 +16,7 @@ class JailbreakDetector(BaseDetector):
     # High confidence jailbreak patterns
     HIGH_CONFIDENCE_PATTERNS = [
         # DAN mode and variants (English)
-        r'Do\s+Anything\s+Now|DAN\s*mode|DAN\s*prompt',
+        r'Do\s+Anything\s+Now|DAN\s+mode|DAN\s*mode\s+\w+|DAN\s*prompt',
         r'Jailbreak\s*mode|Developer\s*Mode|Developer\s*mode\s*enabled',
         # Roleplay bypass (English)
         r'you\s+are\s+in\s+developer\s+mode',
